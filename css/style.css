@@ -1,0 +1,508 @@
+/* Basic Reset & Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+    box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+/* Color Palette - CSS Variables */
+:root {
+    --primary-dark: #0A0A23;
+    --primary-light: #E0E0E0;
+    --accent-neon-blue: #00FFFF;
+    --accent-neon-pink: #FF00FF;
+    --accent-neon-green: #39FF14;
+    --secondary-gray: #888888;
+    --header-bg: #1a1a3a; /* Slightly lighter than body for header/footer */
+}
+
+/* Body Styling & Subtle Background Pattern */
+body {
+    background-color: var(--primary-dark);
+    color: var(--primary-light);
+    font-family: 'Roboto', sans-serif; /* Default body font */
+    font-size: 16px;
+    line-height: 1.6;
+    /* Subtle grid pattern */
+    background-image:
+        linear-gradient(rgba(0, 255, 255, 0.07) 1px, transparent 1px), /* Adjusted grid color for subtlety */
+        linear-gradient(90deg, rgba(0, 255, 255, 0.07) 1px, transparent 1px);
+    background-size: 40px 40px; /* Adjusted grid size */
+    background-position: -1px -1px;
+    overflow-x: hidden; /* Prevent horizontal scrollbar from animations/effects */
+}
+
+/* Subtle CRT/Scan Line Effect */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        transparent,
+        transparent 2px, /* Line spacing */
+        rgba(0, 255, 255, 0.03) 3px, /* Thinner, more subtle line color */
+        rgba(0, 255, 255, 0.03) 4px /* Line thickness */
+    );
+    z-index: 9999; /* Ensure it's on top */
+    opacity: 0.6; /* Adjust overall opacity of the effect */
+}
+
+
+/* Typography & Neon Effects */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Press Start 2P', cursive; /* Font for headings */
+    color: var(--accent-neon-blue);
+    text-shadow: 0 0 5px var(--accent-neon-blue), 0 0 10px var(--accent-neon-blue), 0 0 15px rgba(0, 255, 255, 0.7); /* Enhanced glow */
+    margin-bottom: 1.5rem;
+    overflow-wrap: break-word; /* Prevent overflow for long words in headings */
+}
+
+/* Header Styling */
+header {
+    background-color: var(--header-bg);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 0.8em 0; /* Slightly reduced padding */
+    border-bottom: 2px solid var(--accent-neon-pink);
+    box-shadow: 0 0 15px var(--accent-neon-pink), 0 0 25px rgba(255, 0, 255, 0.5); /* Enhanced glow */
+}
+
+nav { /* Added nav element selector for responsiveness */
+    width: 100%;
+}
+
+nav ul {
+    list-style-type: none;
+    text-align: center;
+    padding: 0 10px; /* Add some padding to prevent links sticking to edges */
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 10px; /* Slightly reduced margin */
+}
+
+nav a {
+    color: var(--primary-light);
+    text-decoration: none;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.85em; /* Slightly adjusted font size */
+    padding: 8px 12px; /* Adjusted padding */
+    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.2s ease; /* Added transform transition */
+    display: inline-block; /* Ensure padding is respected and helps with wrapping */
+}
+
+nav a:hover, nav a:focus, nav a.active {
+    color: var(--accent-neon-pink);
+    text-shadow: 0 0 5px var(--accent-neon-pink), 0 0 10px var(--accent-neon-pink), 0 0 15px var(--accent-neon-pink);
+    transform: scale(1.1); /* Slight scale effect on hover/active */
+}
+
+/* Section Styling (Base for animation) */
+section {
+    padding: 90px 20px 50px;
+    margin: 0;
+    border-bottom: 1px solid var(--secondary-gray);
+    position: relative;
+    /* Animation properties */
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    overflow-x: hidden; /* Prevent horizontal scroll from section content */
+}
+
+section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+section h2 {
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 2em;
+}
+
+/* Hero Section Specific Styling */
+#hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px 20px 20px; /* Ensure bottom padding for small screens if content is tall */
+    background: transparent;
+    border-bottom: none;
+    opacity: 1; /* Hero is visible by default, no initial animation needed here */
+    transform: translateY(0);
+}
+
+#hero h1 {
+    font-size: 2.8em; /* Slightly adjusted */
+    color: var(--accent-neon-green);
+    text-shadow: 0 0 8px var(--accent-neon-green), 0 0 15px var(--accent-neon-green), 0 0 25px var(--accent-neon-green); /* Enhanced glow */
+    animation: pulse 2.5s infinite ease-in-out; /* Adjusted timing function */
+}
+
+/* Keyframe animation for hero headline */
+@keyframes pulse {
+    0% { text-shadow: 0 0 8px var(--accent-neon-green), 0 0 15px var(--accent-neon-green); transform: scale(1); }
+    50% { text-shadow: 0 0 12px var(--accent-neon-green), 0 0 25px var(--accent-neon-green), 0 0 35px var(--accent-neon-green); transform: scale(1.03); }
+    100% { text-shadow: 0 0 8px var(--accent-neon-green), 0 0 15px var(--accent-neon-green); transform: scale(1); }
+}
+
+/* Project Cards Styling (With animation setup) */
+.project-grid { /* Added a grid container for projects */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 25px;
+}
+
+.project-card {
+    background-color: rgba(26, 26, 58, 0.85); /* Slightly more opaque */
+    border: 1px solid var(--accent-neon-green);
+    border-radius: 8px;
+    padding: 25px;
+    /* margin-bottom: 30px; Removed as gap handles spacing */
+    /* Animation properties */
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out, box-shadow 0.3s ease; /* Added box-shadow to transition */
+}
+
+.project-card.is-visible {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+.project-card:hover {
+    box-shadow: 0 0 15px var(--accent-neon-green), 0 0 30px var(--accent-neon-green);
+    transform: translateY(-8px) scale(1.02); /* Enhanced hover effect */
+}
+
+.project-card img { /* Responsive images */
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 15px;
+    border-radius: 4px; /* Optional: rounded corners for images */
+}
+
+#projects .project-card h3 {
+    color: var(--accent-neon-green);
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    text-shadow: 0 0 5px var(--accent-neon-green); /* Subtle glow for card titles */
+}
+
+#projects .project-card p {
+    font-size: 1em;
+    color: var(--primary-light);
+    margin-bottom: 15px;
+    overflow-wrap: break-word; /* Prevent text overflow */
+}
+
+/* Skills Section Styling (With animation setup) */
+#skills .skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px; /* Adjusted gap */
+}
+
+.skill-item {
+    background-color: transparent;
+    border: 2px solid var(--accent-neon-pink);
+    padding: 10px 15px; /* Adjusted padding */
+    margin: 5px;
+    display: inline-block;
+    font-family: 'Press Start 2P', cursive;
+    color: var(--accent-neon-pink);
+    font-size: 0.8em; /* Adjusted font size */
+    border-radius: 4px;
+    /* Animation properties */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.skill-item.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.skill-item:hover {
+    background-color: var(--accent-neon-pink);
+    color: var(--primary-dark);
+    box-shadow: 0 0 10px var(--accent-neon-pink), 0 0 15px var(--accent-neon-pink);
+    transform: scale(1.1); /* Scale effect on hover */
+}
+
+/* General Button Styling */
+.btn {
+    padding: 10px 20px; /* Adjusted padding */
+    background-color: transparent;
+    color: var(--accent-neon-blue);
+    border: 2px solid var(--accent-neon-blue);
+    text-decoration: none;
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 10px;
+    margin-right: 5px; /* Spacing for multiple buttons */
+    font-size: 0.8em; /* Adjusted font size */
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    text-shadow: 0 0 3px var(--accent-neon-blue), 0 0 5px var(--accent-neon-blue); /* Enhanced button text glow */
+}
+
+.btn:hover, .btn:focus {
+    background-color: var(--accent-neon-blue);
+    color: var(--primary-dark);
+    box-shadow: 0 0 10px var(--accent-neon-blue), 0 0 20px var(--accent-neon-blue), 0 0 30px var(--accent-neon-blue); /* Stronger glow on hover */
+    transform: translateY(-3px) scale(1.05); /* Lift and scale effect */
+}
+
+/* General Link Styling */
+a {
+    color: var(--accent-neon-green);
+    text-decoration: none;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+    overflow-wrap: break-word; /* Prevent link overflow */
+}
+
+a:not(.btn):not(nav a):hover, /* Exclude buttons and nav links which have their own hover */
+a:not(.btn):not(nav a):focus {
+    color: var(--accent-neon-pink);
+    text-shadow: 0 0 5px var(--accent-neon-pink), 0 0 10px var(--accent-neon-pink);
+}
+
+/* Footer Styling */
+footer {
+    text-align: center;
+    padding: 25px 20px; /* Adjusted padding */
+    background-color: var(--header-bg);
+    color: var(--secondary-gray);
+    border-top: 2px solid var(--accent-neon-pink);
+    font-size: 0.85em; /* Adjusted font size */
+    margin-top: 30px;
+}
+
+/* Optional Scrollbar Styling (WebKit browsers) */
+::-webkit-scrollbar {
+    width: 10px; /* Reduced width */
+}
+
+::-webkit-scrollbar-track {
+    background: var(--primary-dark);
+    box-shadow: inset 0 0 3px var(--secondary-gray); /* Subtle inner shadow */
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-neon-blue);
+    border-radius: 5px; /* Adjusted radius */
+    border: 1px solid var(--primary-dark);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-neon-pink);
+    box-shadow: 0 0 8px var(--accent-neon-pink); /* Adjusted shadow */
+}
+
+/* Utility class for elements that should be visible by default (no animation) */
+.no-animate {
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+/* ------------------------- */
+/* --- Media Queries --- */
+/* ------------------------- */
+
+/* Tablets and larger mobile devices (e.g., landscape phones) */
+@media (max-width: 768px) {
+    body {
+        font-size: 15px; /* Slightly reduce base font size */
+        background-size: 30px 30px; /* Smaller grid pattern */
+    }
+
+    header {
+        padding: 0.7em 0;
+    }
+
+    nav ul {
+        /* Allow wrapping for nav links */
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px; /* Spacing between wrapped items */
+    }
+
+    nav a {
+        font-size: 0.75em; /* Reduce nav link font size */
+        padding: 6px 10px; /* Adjust padding */
+        margin: 0 3px; /* Reduce horizontal margin */
+    }
+
+    section {
+        padding: 70px 15px 40px; /* Adjust section padding */
+    }
+
+    section h2 {
+        font-size: 1.8em; /* Reduce section heading size */
+        margin-bottom: 30px;
+    }
+
+    #hero h1 {
+        font-size: 2.2em; /* Reduce hero headline size */
+    }
+
+    #hero p {
+        font-size: 0.95em; /* Reduce hero paragraph size */
+    }
+
+    .project-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjust minmax for cards */
+        gap: 20px;
+    }
+
+    .project-card {
+        padding: 20px; /* Reduce card padding */
+    }
+
+    #projects .project-card h3 {
+        font-size: 1.3em; /* Reduce project title size */
+    }
+
+    .skill-item {
+        font-size: 0.75em; /* Reduce skill item font size */
+        padding: 8px 12px;
+    }
+
+    .btn {
+        font-size: 0.75em; /* Reduce button font size */
+        padding: 8px 15px;
+    }
+}
+
+
+/* Mobile phones (portrait) */
+@media (max-width: 576px) {
+    body {
+        font-size: 14px; /* Further reduce base font size */
+        background-image: none; /* Optionally remove grid on very small screens for performance/cleanliness */
+    }
+
+    body::after { /* Optionally disable scanlines on very small screens */
+        display: none;
+    }
+
+    header {
+        padding: 0.6em 0;
+        position: absolute; /* Change to absolute if fixed header causes issues on mobile (e.g. with URL bar) */
+                         /* Or keep fixed and ensure body has enough top padding */
+    }
+
+    /* If header is absolute, sections need less top padding */
+    /* section { padding-top: 20px; } */
+    /* #hero { padding-top: 20px; } */
+
+
+    nav ul {
+        gap: 3px; /* Further reduce gap */
+    }
+
+    nav a {
+        font-size: 0.65em; /* Further reduce nav link font size */
+        padding: 5px 7px; /* Further adjust padding */
+    }
+
+    nav a:hover, nav a:focus, nav a.active {
+        transform: scale(1.05); /* Reduce hover scale effect */
+    }
+
+    section {
+        padding: 60px 10px 30px; /* Further adjust section padding */
+    }
+
+    section h2 {
+        font-size: 1.5em; /* Further reduce section heading size */
+        margin-bottom: 25px;
+    }
+
+    #hero {
+        padding-top: 70px; /* Adjust if header remains fixed */
+    }
+
+    #hero h1 {
+        font-size: 1.8em; /* Further reduce hero headline size */
+    }
+
+    #hero p {
+        font-size: 0.9em; /* Further reduce hero paragraph size */
+        padding: 0 10px; /* Add padding to prevent text touching edges */
+    }
+
+    .project-grid {
+        grid-template-columns: 1fr; /* Stack project cards */
+        gap: 15px;
+    }
+
+    .project-card {
+        padding: 15px; /* Further reduce card padding */
+    }
+
+    #projects .project-card h3 {
+        font-size: 1.2em; /* Further reduce project title size */
+    }
+
+    #projects .project-card p {
+        font-size: 0.95em;
+    }
+
+    #skills .skills-container {
+        gap: 8px; /* Further reduce gap for skills */
+    }
+
+    .skill-item {
+        font-size: 0.7em; /* Further reduce skill item font size */
+        padding: 6px 10px;
+    }
+
+    .skill-item:hover {
+        transform: scale(1.05); /* Reduce hover scale */
+    }
+
+    .btn {
+        font-size: 0.7em; /* Further reduce button font size */
+        padding: 7px 12px;
+        width: calc(100% - 10px); /* Make buttons more block-like for easier tapping */
+        margin-left: 5px;
+        margin-right: 5px;
+        box-sizing: border-box; /* Ensure padding doesn't increase width */
+        text-align: center;
+    }
+
+    .btn:hover, .btn:focus {
+        transform: translateY(-2px) scale(1.02); /* Reduce hover effect */
+    }
+
+    #contact .btn { /* Ensure contact buttons stack nicely */
+        margin-bottom: 10px;
+    }
+
+    footer {
+        font-size: 0.8em;
+        padding: 20px 10px;
+    }
+}
